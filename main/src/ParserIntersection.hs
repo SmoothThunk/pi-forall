@@ -1,8 +1,9 @@
+module IntersectionTypeParser where
+
 import Text.Parsec
 import Text.Parsec.String (Parser)
 import Text.Parsec.Char (space)
 
--- Define the data types for types
 data Type = TypeVar String | TypeIntersection Type Type deriving Show
 
 -- Parser for type variables
@@ -12,24 +13,26 @@ typeVarParser = TypeVar <$> many1 letter
 -- Parser for intersection types
 intersectionParser :: Parser Type
 intersectionParser = do
-    -- Parse the left side of the intersection
     t1 <- typeParser
-    -- Parse spaces, the "/\\", and more spaces
     spaces >> string "/\\" >> spaces
-    -- Parse the right side of the intersection
     t2 <- typeParser
-    -- Combine the parsed types into an intersection type
     return (TypeIntersection t1 t2)
 
 -- Main parser for types
 typeParser :: Parser Type
 typeParser = intersectionParser <|> typeVarParser
 
--- Example usage
+parseIntersectionTypes :: String -> IO ()
+parseIntersectionTypes input = do
+    putStrLn "Parsing intersection types:"
+    mapM_ testAndPrint (lines input)
+  where
+    testAndPrint line =
+        case parse typeParser "" line of
+            Left err -> putStrLn $ "Error parsing '" ++ line ++ "': " ++ show err
+            Right result -> putStrLn $ "Parsed '" ++ line ++ "': " ++ show result
+
 main :: IO ()
 main = do
-    let input = "A /\\ B"
-    -- Parse the input using the typeParser
-    case parse typeParser "" input of
-        Left err -> print err
-        Right result -> print result
+    input <- readFile "testcases.txt"  -- Adjust the file name as needed
+    parseIntersectionTypes input
