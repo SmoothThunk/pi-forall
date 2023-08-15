@@ -14,7 +14,7 @@ typeVarParser = TypeVar <$> many1 letter
 intersectionParser :: Parser Type
 intersectionParser = do
     t1 <- typeParser
-    spaces >> string "/\\" >> spaces
+    spaces >> string "/\" >> spaces
     t2 <- typeParser
     return (TypeIntersection t1 t2)
 
@@ -34,5 +34,5 @@ parseIntersectionTypes input = do
 
 main :: IO ()
 main = do
-    input <- readFile "testcases.txt"  -- Adjust the file name as needed
+    input <- readFile "intersectionTestCases.txt"  -- Adjust the file name as needed
     parseIntersectionTypes input
