@@ -607,3 +607,26 @@ instance Unbound.LFresh ((->) DispInfo) where
           { dispAvoid =
               S.fromList names `S.union` dispAvoid di
           }
+
+
+----------------------------------------
+-- Pretty Printer for Intersection Types
+----------------------------------------
+
+data Type = TypeVar String | TypeIntersection Type Type deriving Show
+
+-- Pretty printer for the Type data type
+prettyPrintType :: Type -> String
+prettyPrintType (TypeVar name) = name
+prettyPrintType (TypeIntersection t1 t2) =
+    "(" ++ prettyPrintType t1 ++ " /\ " ++ prettyPrintType t2 ++ ")"
+
+-- Example usage
+main :: IO ()
+main = do
+    let type1 = TypeIntersection (TypeVar "A") (TypeVar "B")
+        type2 = TypeIntersection (TypeVar "X") (TypeIntersection (TypeVar "Y") (TypeVar "Z"))
+    
+    putStrLn "Pretty printed types:"
+    putStrLn $ prettyPrintType type1
+    putStrLn $ prettyPrintType type2
