@@ -73,12 +73,21 @@ data Term
     LitBool Bool
   | -- | `if a then b1 else b2` expression for eliminating booleans
     If Term Term Term
-  | -- | Sigma-type (homework), written `{ x : A | B }`  
+    
+  | -- | Sigma-type (homework), written `{ x : A | B }` -- HERE'S THE SIGMA TYPE!!! 
     TySigma Term (Unbound.Bind TName Term)
   | -- | introduction form for Sigma-types `( a , b )`
     Prod Term Term
   | -- | elimination form for Sigma-types `let (x,y) = a in b`
-    LetPair Term (Unbound.Bind (TName, TName) Term) 
+    LetPair Term (Unbound.Bind (TName, TName) Term)
+    
+  | -- | Intersect-type (homework), written `{ x: A /\ B}` -- HERE'S THE INTERSECTION TYPE!!
+    TyIntersect Term (Unbound.Bind TName Term)
+  | -- | introduction form for Intersection types `[ a , b ]`
+    Prod term term
+  | -- | elimiation form for Intersection types `let [x, y] = a in b`
+    LetPair Term (Unbound.Bind (TName, TName) Term) --- ASK DOWNEN!!
+    
 {- SOLN EQUAL -}
   | -- | Equality type  `a = b`
     TyEq Term Term

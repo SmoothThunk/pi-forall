@@ -59,6 +59,10 @@ Optional components in this BNF are marked with < >
     | A * B                    Nondependent pair type (syntactic sugar)
     | (a, b)                   Pair introduction
     | let (x,y) = a in b       Pair elimination
+    | { x : A /\ B }   	       Intersection pair type
+    | A * B   	   	       Nondependent pair
+    | [a, b]		       Pair introduction
+    | let [x,y] = a in b
 
 {- SOLN EQUAL -}
     | a = b                    Equality type
@@ -231,7 +235,7 @@ piforallStyle = Token.LanguageDef
                   ,"Unit", "()"
                   ]
                , Token.reservedOpNames =
-                 ["!","?","\\",":",".",",","<", "=", "+", "-", "*", "^", "()", "_","|","{", "}"]
+                 ["!","?","\\",":",".",",","<", "=", "+", "-", "*", "^", "()", "_","|","{", "}", "/\"]
                 }
 {- SOLN DATA -}
 tokenizer :: Token.GenTokenParser String [Column] (StateT ConstructorNames Unbound.FreshM)
@@ -530,6 +534,7 @@ factor = choice [ {- SOLN DATA -} varOrCon   <?> "a variable or nullary data con
                 , bconst     <?> "a constant"
                 , ifExpr     <?> "an if expression"
                 , sigmaTy    <?> "a sigma type"
+		, intersectionTy <?> "a intersection type" --- ADDED TO FACTOR LIST!!
 
                 , expProdOrAnnotOrParens
                     <?> "an explicit function type or annotated expression"
@@ -762,5 +767,20 @@ sigmaTy = do
 {- SOLN DATA -}
   return $ TyCon sigmaName [Arg Rel a, Arg Rel (Lam Rel (Unbound.bind x b))]
 {- STUBWITH   return (TySigma a (Unbound.bind x b)) -}
+
+intersectionTy :: LParser Term --- INTERSECTION TY!!!
+intersectionTy = do
+  reservedOp "{"
+  x <- variable
+  colon
+  a <- expr
+  reservedOp "/\"
+  b <- expr
+  reservedOp "}"
+{- SOLN DATA -}
+  return $ TyCon intersectionName [Arg Rel a, Arg Rel (Lam Rel (Unbound.bind x b))]
+{- STUBWITH   return (TyIntersection a (Unbound.bind x b)) -}
+
+
 
 
