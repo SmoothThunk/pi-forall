@@ -14,7 +14,7 @@ typeVarParser = TypeVar <$> many1 letter
 intersectionParser :: Parser Type
 intersectionParser = do
     t1 <- typeParser
-    spaces >> string "/\" >> spaces
+    spaces >> string "/\\" >> spaces -- Paul: Escaped the backslash
     t2 <- typeParser
     return (TypeIntersection t1 t2)
 

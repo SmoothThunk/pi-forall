@@ -235,7 +235,8 @@ piforallStyle = Token.LanguageDef
                   ,"Unit", "()"
                   ]
                , Token.reservedOpNames =
-                 ["!","?","\\",":",".",",","<", "=", "+", "-", "*", "^", "()", "_","|","{", "}", "/\"]
+                 ["!","?","\\",":",".",",","<", "=", "+", "-", "*", "^", "()", "_","|","{", "}", "/\\"]
+                 -- ^Paul: Escaped the backslash.
                 }
 {- SOLN DATA -}
 tokenizer :: Token.GenTokenParser String [Column] (StateT ConstructorNames Unbound.FreshM)
@@ -774,7 +775,7 @@ intersectionTy = do
   x <- variable
   colon
   a <- expr
-  reservedOp "/\"
+  reservedOp "/\\" -- Paul: Escaped the backslash
   b <- expr
   reservedOp "}"
 {- SOLN DATA -}

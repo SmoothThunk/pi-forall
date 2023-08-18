@@ -1,6 +1,10 @@
-data Type = TypeVar String | DependentTypeIntersection Type (Term -> Type) deriving Show
+data Type = TypeVar String | DependentTypeIntersection Type (Term -> Type) -- deriving Show
 data Term = Var String | App Term Term deriving Show
-data Context = EmptyContext | Extend Context String Type deriving Show
+data Context = EmptyContext | Extend Context String Type -- deriving Show
+
+-- ^Paul: Haskell doesn't know how to `Show` functions, so `deriving
+-- Show` doesn't work on `Type` (which causes it to fail for `Context`
+-- since it contains un`Show`able `Type`s, too).
 
 -- Typing judgment
 (|-) :: Context -> Term -> Type -> Bool

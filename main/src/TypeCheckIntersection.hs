@@ -4,6 +4,16 @@ data Type
   | TyBool
   | TyArrow Type Type  -- Function type
   | TyIntersect Type Type  -- Intersection type
+  deriving Eq
+  -- ^Paul: Added the `deriving Eq` clause as a hack to compile this
+  -- code, since `inferType` and `checkType` below uses equality on
+  -- types to check if two types are the same.  There will almost
+  -- certainly be two types that we expect to be the same, but that
+  -- the derived equality operation will consider different, causing
+  -- bugs where the type checker rejects programs it should allow.
+  -- This is why the main pi-forall typechecker uses a more
+  -- sophisticated notion of equality between types that has to be
+  -- manually implemented.
 
 -- Define the expressions in the language
 data Expr

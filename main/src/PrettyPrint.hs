@@ -613,19 +613,23 @@ instance Unbound.LFresh ((->) DispInfo) where
 -- Pretty Printer for Intersection Types
 ----------------------------------------
 
-data Type = TypeVar String | TypeIntersection Type Type deriving Show
+data IType = ITypeVar String | ITypeIntersection IType IType deriving Show
+-- ^Paul: Renamed to IType, ITypeVar, and ITypeIntersection to avoid
+-- name clash with the official Syntax.Type
 
 -- Pretty printer for the Type data type
-prettyPrintType :: Type -> String
-prettyPrintType (TypeVar name) = name
-prettyPrintType (TypeIntersection t1 t2) =
-    "(" ++ prettyPrintType t1 ++ " /\ " ++ prettyPrintType t2 ++ ")"
+prettyPrintType :: IType -> String
+prettyPrintType (ITypeVar name) = name
+prettyPrintType (ITypeIntersection t1 t2) =
+    "(" ++ prettyPrintType t1 ++ " /\\ " ++ prettyPrintType t2 ++ ")"
+-- ^Paul: To use a (single) backslash in a string, it needs to be
+-- escaped as "\\"!
 
 -- Example usage
 main :: IO ()
 main = do
-    let type1 = TypeIntersection (TypeVar "A") (TypeVar "B")
-        type2 = TypeIntersection (TypeVar "X") (TypeIntersection (TypeVar "Y") (TypeVar "Z"))
+    let type1 = ITypeIntersection (ITypeVar "A") (ITypeVar "B")
+        type2 = ITypeIntersection (ITypeVar "X") (ITypeIntersection (ITypeVar "Y") (ITypeVar "Z"))
     
     putStrLn "Pretty printed types:"
     putStrLn $ prettyPrintType type1

@@ -83,10 +83,18 @@ data Term
     
   | -- | Intersect-type (homework), written `{ x: A /\ B}` -- HERE'S THE INTERSECTION TYPE!!
     TyIntersect Term (Unbound.Bind TName Term)
-  | -- | introduction form for Intersection types `[ a , b ]`
-    Prod term term
-  | -- | elimiation form for Intersection types `let [x, y] = a in b`
-    LetPair Term (Unbound.Bind (TName, TName) Term) --- ASK DOWNEN!!
+--  | -- | introduction form for Intersection types `[ a , b ]`
+--    Prod term term
+--  | -- | elimiation form for Intersection types `let [x, y] = a in b`
+--    LetPair Term (Unbound.Bind (TName, TName) Term) --- ASK DOWNEN!!
+--
+-- ^Paul: Intersection types can potentially describe any term, so they
+-- don't have specific syntactic representation in terms.  From the
+-- view of the program itself, intersection types are totally
+-- invisible, similar to the way that polymorphism is invisible in
+-- Haskell (ignoring any type annotations, you don't have to write
+-- anything to activate or use polymorphism; it just happens
+-- unspoken).
     
 {- SOLN EQUAL -}
   | -- | Equality type  `a = b`
@@ -263,6 +271,11 @@ tyUnitName :: TyConName
 tyUnitName = "Unit"
 litUnitName :: DataConName
 litUnitName = "()"
+
+intersectionName :: TyConName
+intersectionName = "Intersect"
+-- ^Paul: Add `intersectionName` used in Parser.hs
+
 
 initialTCNames :: Set TyConName
 initialTCNames = Set.fromList [sigmaName, boolName, tyUnitName]
