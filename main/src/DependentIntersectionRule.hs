@@ -1,4 +1,4 @@
-data Type = TypeVar String | DependentTypeIntersection (Term -> Type) deriving Show
+data Type = TypeVar String | DependentTypeIntersection Type (Term -> Type) deriving Show
 data Term = Var String | App Term Term deriving Show
 data Context = EmptyContext | Extend Context String Type deriving Show
 
@@ -6,12 +6,10 @@ data Context = EmptyContext | Extend Context String Type deriving Show
 (|-) :: Context -> Term -> Type -> Bool
 (|-) EmptyContext (Var _) _ = False
 (|-) (Extend ctx x a) (Var y) t = if x == y then ctx |- a : t else ctx |- Var y : t
-(|-) ctx (App m1 m2) t =
-    case ctx |- m1 : DependentTypeIntersection f of
-        True -> ctx |- m2 : f m2
+(|-) ctx m (DependentTypeIntersection a f) =
+    case (ctx |- m) a of
+        True -> (ctx |- m) (f m)
         _    -> False
-  where
-    DependentTypeIntersection f = t
 
 -- Dependent Intersection introduction rule
 dependentIntersectionIntroduction :: Context -> Type -> Context -> (Term -> Type) -> Bool
